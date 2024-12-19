@@ -102,6 +102,7 @@ export async function performStaticCodeAnalysisOnFilesInDiff(
   );
   try {
     const findings = await scanFiles(scannerFlags);
+    console.log('... Results returned as "findings":', JSON.stringify(findings, null, 2));
     return typeof findings === "string" ? [] : findings;
   } catch (err) {
     const typedErr = err as unknown as ExecSyncError;
@@ -136,7 +137,7 @@ function filterFindingsToDiffScope(
     const relevantLines =
       filePathToChangedLines.get(filePath) || new Set<number>();
     for (let violation of finding.violations) {
-      if (!isInChangedLines(violation, relevantLines) && !inputs.target) {
+      if (!inputs.target && !isInChangedLines(violation, relevantLines)) {
         continue;
       }
       reporter.translateViolationToReport(filePath, violation, finding.engine);
