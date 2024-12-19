@@ -131,7 +131,7 @@ function filterFindingsToDiffScope(
   console.log(
     "Filtering the findings to just the lines which are part of the context..."
   );
-
+  console.log('Findings: ' + JSON.stringify(findings));
   for (let finding of findings) {
     const filePath = finding.fileName.replace(process.cwd() + "/", "");
     const relevantLines =
