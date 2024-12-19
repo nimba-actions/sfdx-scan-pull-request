@@ -131,13 +131,11 @@ function filterFindingsToDiffScope(
   console.log(
     "Filtering the findings to just the lines which are part of the context..."
   );
-  console.log('Findings: ' + JSON.stringify(findings));
   for (let finding of findings) {
     const filePath = finding.fileName.replace(process.cwd() + "/", "");
     const relevantLines =
       filePathToChangedLines.get(filePath) || new Set<number>();
     for (let violation of finding.violations) {
-      console.log('violation' + JSON.stringify(violation));
       if (!isInChangedLines(violation, relevantLines) && !inputs.target) {
         continue;
       }
