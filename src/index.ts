@@ -3,7 +3,7 @@
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
    You may obtain a copy of the License at
-	 https://www.apache.org/licenses/LICENSE-2.0
+   https://www.apache.org/licenses/LICENSE-2.0
    Unless required by applicable law or agreed to in writing, software
    distributed under the License is distributed on an "AS IS" BASIS,
    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -137,6 +137,7 @@ function filterFindingsToDiffScope(
     const relevantLines =
       filePathToChangedLines.get(filePath) || new Set<number>();
     for (let violation of finding.violations) {
+      console.log('violation' + JSON.stringify(violation));
       if (!isInChangedLines(violation, relevantLines) && !inputs.target) {
         continue;
       }
@@ -222,10 +223,10 @@ async function main() {
   let filePathToChangedLines = inputs.target
     ? new Map<string, Set<number>>()
     : await getDiffInPullRequest(
-        pullRequest?.base?.ref,
-        pullRequest?.head?.ref,
-        pullRequest?.base?.repo?.clone_url
-      );
+      pullRequest?.base?.ref,
+      pullRequest?.head?.ref,
+      pullRequest?.base?.repo?.clone_url
+    );
 
   const filesToScan = getFilesToScan(filePathToChangedLines, inputs.target);
   if (filesToScan.length === 0) {
