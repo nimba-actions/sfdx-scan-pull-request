@@ -72,6 +72,7 @@ export async function scanFiles(scannerFlags: ScannerFlags) {
     )
     .reduce((acc, [one, two]) => (one && two ? [...acc, one, two] : acc), []);
 
+  console.log('Rules: ' + execSync('npx sf scanner rule list --json').toString());
   return cli<ScannerFinding[] | string>("scanner run", [
     ...scannerCliArgs,
     "--json",
