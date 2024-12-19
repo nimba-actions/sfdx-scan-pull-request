@@ -132,12 +132,29 @@ function filterFindingsToDiffScope(
   console.log(
     "Filtering the findings to just the lines which are part of the context..."
   );
+
+  // Add debug logging
+  console.log('Files with changes:', Array.from(filePathToChangedLines.keys()));
+  console.log('Changed lines map:', Object.fromEntries(filePathToChangedLines));
+
   for (let finding of findings) {
     const filePath = finding.fileName.replace(process.cwd() + "/", "");
-    const relevantLines =
-      filePathToChangedLines.get(filePath) || new Set<number>();
+    const relevantLines = filePathToChangedLines.get(filePath) || new Set<number>();
+
+    // Add debug logging
+    console.log('Processing file:', filePath);
+    console.log('Relevant lines:', Array.from(relevantLines));
+
     for (let violation of finding.violations) {
-      if (!inputs.target && !isInChangedLines(violation, relevantLines)) {
+      // Add debug logging
+      console.log('Checking violation:', {
+        line: violation.line,
+        isInChangedLines: isInChangedLines(violation, relevantLines),
+        hasTarget: !!inputs.target
+      });
+
+      if (!isInChangedLines(violation, relevantLines) && !inputs.target) {
+        console.log('Skipping violation - not in changed lines and no target specified');
         continue;
       }
       reporter.translateViolationToReport(filePath, violation, finding.engine);
