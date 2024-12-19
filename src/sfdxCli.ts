@@ -71,7 +71,9 @@ export async function scanFiles(scannerFlags: ScannerFlags) {
       scannerFlags[key] ? ([`--${key}`, scannerFlags[key]] as string[]) : []
     )
     .reduce((acc, [one, two]) => (one && two ? [...acc, one, two] : acc), []);
-
+  console.log('Running scanner... ');
+  console.log('scanner run ' + scannerCliArgs);
+  console.log('...');
   return cli<ScannerFinding[] | string>("scanner run", [
     ...scannerCliArgs,
     "--json",
