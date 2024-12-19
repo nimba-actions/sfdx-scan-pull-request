@@ -63,6 +63,8 @@ const cli = async <T>(commandName: string, cliArgs: string[] = []) => {
 };
 
 export async function scanFiles(scannerFlags: ScannerFlags) {
+  console.log('Input scannerFlags:', JSON.stringify(scannerFlags, null, 2));
+
   scannerFlags.target = `"` + scannerFlags.target + `"`;
   const scannerCliArgs = (
     Object.keys(scannerFlags) as Array<keyof ScannerFlags>
@@ -71,13 +73,17 @@ export async function scanFiles(scannerFlags: ScannerFlags) {
       scannerFlags[key] ? ([`--${key}`, scannerFlags[key]] as string[]) : []
     )
     .reduce((acc, [one, two]) => (one && two ? [...acc, one, two] : acc), []);
-  console.log('Running scanner... ');
-  console.log('scanner run ' + scannerCliArgs);
-  console.log('...');
-  return cli<ScannerFinding[] | string>("scanner run", [
+
+  console.log('Generated CLI args:', scannerCliArgs);
+
+  const results = await cli<ScannerFinding[] | string>("scanner run", [
     ...scannerCliArgs,
     "--json",
   ]);
+
+  console.log('Raw scanner results:', JSON.stringify(results, null, 2));
+
+  return results;
 }
 
 export async function registerRule(path: string, language: string) {
