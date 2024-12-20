@@ -79,12 +79,17 @@ export async function scanFiles(scannerFlags: ScannerFlags) {
   ]);
 
   if (Array.isArray(results)) {
-    console.table(results.map(item => ({
-      fileName: item.fileName.split('/').pop(),
-      ruleName: item.violations[0].ruleName,
-      message: item.violations[0].message.trim(),
-      lines: `${item.violations[0].line}-${item.violations[0].endLine}`
-    })), ['fileName', 'ruleName', 'message', 'lines']);
+    console.table(Object.fromEntries(
+      results.map((item, i) => [
+        item.fileName.split('/').pop(),
+        {
+          ruleName: item.violations[0].ruleName,
+          message: item.violations[0].message.trim(),
+          severity: item.violations[0].severity,
+          lines: `${item.violations[0].line}-${item.violations[0].endLine}`
+        }
+      ])
+    ));
   }
 
   return results;
