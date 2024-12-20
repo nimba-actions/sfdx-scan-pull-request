@@ -80,7 +80,7 @@ export async function scanFiles(scannerFlags: ScannerFlags) {
 
   if (Array.isArray(results)) {
     console.table(Object.fromEntries(
-      results.map((item, i) => [
+      results.map(item => [
         item.fileName.split('/').pop(),
         {
           ruleName: item.violations[0].ruleName,
