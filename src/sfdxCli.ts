@@ -63,7 +63,6 @@ const cli = async <T>(commandName: string, cliArgs: string[] = []) => {
 };
 
 export async function scanFiles(scannerFlags: ScannerFlags) {
-  console.log('Input scannerFlags:', JSON.stringify(scannerFlags, null, 2));
 
   scannerFlags.target = `"` + scannerFlags.target + `"`;
   const scannerCliArgs = (
@@ -74,14 +73,19 @@ export async function scanFiles(scannerFlags: ScannerFlags) {
     )
     .reduce((acc, [one, two]) => (one && two ? [...acc, one, two] : acc), []);
 
-  console.log('Generated CLI args:', scannerCliArgs);
-
   const results = await cli<ScannerFinding[] | string>("scanner run", [
     ...scannerCliArgs,
     "--json",
   ]);
 
-  console.log('Raw scanner results:', JSON.stringify(results, null, 2));
+  if (Array.isArray(results)) {
+    console.table(results.map(item => ({
+      fileName: item.fileName.split('/').pop(),
+      ruleName: item.violations[0].ruleName,
+      message: item.violations[0].message.trim(),
+      lines: `${item.violations[0].line}-${item.violations[0].endLine}`
+    })), ['fileName', 'ruleName', 'message', 'lines']);
+  }
 
   return results;
 }
